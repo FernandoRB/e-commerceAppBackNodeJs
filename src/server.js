@@ -171,27 +171,64 @@ const UserSchema = new Schema({
 });
 const User = model('User', UserSchema);
 
+// app.post('/api/login', async (req, res) => {
+//   try {
+//     const { username, password } = req.body;
+//     if (!username || !password) {
+//       return res.status(400).json({ error: 'Faltan credenciales' });
+//     }
+//     const user = await User.findOne({ username }).lean();
+//       console.log('👤 Usuario encontrado:', user);
+
+//     if (!user) return res.status(401).json({ error: 'Usuario no encontrado' });
+//     if (user.password !== password) {
+//          console.log('❌ Contraseña incorrecta');
+//       return res.status(401).json({ error: 'Contraseña incorrecta' });
+//     }
+//     console.log('✅ Login exitoso')
+//     return res.json({ token: 'ok-' + user._id.toString() });
+//   } catch (err) {
+//     console.error('🔥 Error en login:', err);
+//     return res.status(500).json({ error: 'Error en login' });
+//   }
+// });
+
+
+
 app.post('/api/login', async (req, res) => {
   try {
     const { username, password } = req.body;
+
+    // Verificamos que haya credenciales
     if (!username || !password) {
       return res.status(400).json({ error: 'Faltan credenciales' });
     }
-    const user = await User.findOne({ username }).lean();
-      console.log('👤 Usuario encontrado:', user);
 
-    if (!user) return res.status(401).json({ error: 'Usuario no encontrado' });
+    // Buscamos el usuario
+    const user = await User.findOne({ username }).lean();
+
+    if (!user) {
+      return res.status(401).json({ error: 'Usuario no encontrado' });
+    }
+
+    // Comparamos password directo, SIN bcrypt
     if (user.password !== password) {
-         console.log('❌ Contraseña incorrecta');
       return res.status(401).json({ error: 'Contraseña incorrecta' });
     }
-    console.log('✅ Login exitoso')
-    return res.json({ token: 'ok-' + user._id.toString() });
+
+    // Si todo OK, devolvemos token
+    return res.status(200).json({
+      message: 'Login exitoso',
+      token: 'ok-' + user._id.toString()
+    });
+
   } catch (err) {
-    console.error('🔥 Error en login:', err);
-    return res.status(500).json({ error: 'Error en login' });
+    console.error('🔥 ERROR en login:', err.message);
+    return res.status(500).json({ error: 'Error en el servidor' });
   }
 });
+
+
 
 // ===== Healthcheck =====
 app.get('/', (_req, res) => res.status(200).send('OK'));
