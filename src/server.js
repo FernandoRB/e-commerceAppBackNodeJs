@@ -22,8 +22,6 @@ mongoose.connect(process.env.MONGODB_URI, { dbName: 'ecommerce' })
 // ===== CORS (antes que todo) =====
 const allowedOrigins = [
   'https://app-book-reviews-front.vercel.app',
-  'http://localhost:3000',
-  'http://localhost:3001',
   'http://localhost:4200'
   
 
