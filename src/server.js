@@ -188,8 +188,7 @@ app.post('/api/login', async (req, res) => {
     console.log('✅ Login exitoso')
     return res.json({ token: 'ok-' + user._id.toString() });
   } catch (err) {
-    console.error('🔥 Error en login:', error);
-    console.error('[LOGIN] Error:', err.message);
+    console.error('🔥 Error en login:', err);
     return res.status(500).json({ error: 'Error en login' });
   }
 });
